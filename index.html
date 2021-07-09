@@ -28,45 +28,53 @@
 <script>
   const canvas = document.querySelector("canvas");
   const body = document.body;
+  const { offsetWidth, offsetHeight } = body;
   const rate = window.devicePixelRatio;
-  canvas.width = body.offsetWidth * rate;
-  canvas.height = body.offsetHeight * rate;
-  canvas.style.cssText = `width:${body.offsetWidth}px;height:${body.offsetHeight}px`
+
+  console.log(rate, 'rate')
+  canvas.width = offsetWidth * rate;
+  canvas.height = offsetHeight * rate;
+  canvas.style.cssText = `width:${offsetWidth}px;height:${offsetHeight}px`
   const ctx = canvas.getContext("2d");
+  ctx.scale(rate, rate);
   let startX = 0, startY = 0;
-  ctx.scale(rate,rate)
+
+
+  function targetN(num) {
+    return Math.floor(num / rate)
+  }
   canvas.ontouchstart = canvas.onmousedown = function (ev) {
     startX = ev.offsetX;
     startY = ev.offsetY;
-   
+
     if (ev.touches) {
-      startX = ev.touches[0]['clientX'];
-      startY = ev.touches[0]['clientY'];
+      startX = ev.touches[0]['screenX'];
+      startY = ev.touches[0]['screenY'];
     }
     ctx.beginPath();
-    ctx.moveTo(startX/rate, startY/rate);
-    ctx.lineTo(startX/rate, startY/rate);
+    ctx.moveTo(targetN(startX), targetN(startY));
+    ctx.lineTo(startX, startY);
     ctx.closePath();
     ctx.stroke();
 
-    this.touchmove = this.onmousemove = function (ev) {
+    console.log(targetN(startX), targetN(startY))
+    this.ontouchmove = this.onmousemove = function (ev) {
       let x = ev.offsetX;
       let y = ev.offsetY;
       if (ev.touches) {
-        startX = ev.touches[0]['clientX'];
-        startY = ev.touches[0]['clientY'];
+        startX = ev.touches[0]['screenX'];
+        startY = ev.touches[0]['screenY'];
       }
       ctx.beginPath();
-      ctx.moveTo(startX, startY);
-      ctx.lineTo(x, y);
+      ctx.moveTo(targetN(startX), targetN(startY));
+      ctx.lineTo(targetN(x), targetN(y));
       ctx.closePath();
       ctx.stroke();
       startY = y;
       startX = x;
-
     }
-    this.touchend = this.onmouseup = function (ev) {
-      // this.onmousedown = null;
+    this.ontouchend = this.onmouseup = function (ev) {
+      console.log("end")
       this.onmousemove = null;
       this.onmouseup = null;
     }
