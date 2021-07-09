@@ -10,6 +10,7 @@
     * {
       margin: 0;
       padding: 0;
+      /* touch-action: pan-y; */
     }
 
     html,
@@ -17,15 +18,35 @@
       width: 100%;
       height: 100%;
     }
+
+    .menu {
+      width: 100%;
+      height: 40px;
+      position: fixed;
+      top: 0;
+      left: 0;
+
+    }
   </style>
 </head>
 
 <body>
+  <div class="menu">
+    <button onclick="bigger()">变粗</button>
+    <button onclick="clearCanvas()">清空</button>
+    <button onclick="choseColor()">颜色TODO</button>
+    <button onclick="backStep()">回退</button>
+
+  </div>
   <canvas></canvas>
 </body>
 
 </html>
 <script>
+
+  let lineWidth = 1;
+
+  const allStep = [];
   const canvas = document.querySelector("canvas");
   const body = document.body;
   const { offsetWidth, offsetHeight } = body;
@@ -38,7 +59,56 @@
   ctx.scale(rate, rate);
   let startX = 0, startY = 0;
 
-  document.ontouchstart = document.onmousedown = function (ev) {
+
+  function bigger() {
+    lineWidth++;
+    console.log(lineWidth)
+  }
+
+  function clearCanvas() {
+    ctx.clearRect(0, 0, offsetWidth, offsetHeight)
+    allStep = [];
+  }
+
+  function choseColor() {
+
+  }
+
+
+  function backStep() {
+    ctx.clearRect(0, 0, offsetWidth, offsetHeight)
+    allStep.pop();
+    allStep.forEach((item) => {
+      draw(item);
+    })
+  }
+
+  function draw(data) {
+    data.forEach((item, index) => {
+      if (data[index + 1]) {
+        ctx.beginPath();
+        ctx.moveTo(item.x, item.y);
+        ctx.lineTo(data[index + 1]['x'], data[index + 1]['y']);
+        ctx.closePath();
+        ctx.stroke();
+      }
+    })
+  }
+
+  // document.ontouchmove = function () {
+  //   return false;
+  // }
+  // document.ontouchend = function () {
+  //   return false;
+  // }
+
+  canvas.ontouchstart = canvas.onmousedown = function (ev) {
+    if (ev.target.nodeName != 'CANVAS') {
+      return false;
+    }
+    let coordinate = [];
+    ctx.lineCap = 'round';
+    ctx.lineWidth = lineWidth;
     let startX = ev.offsetX;
     let startY = ev.offsetY;
     if (ev.touches) {
@@ -51,7 +121,10 @@
     ctx.closePath();
     ctx.stroke();
 
-    document.ontouchmove = document.onmousemove = function (ev) {
+    coordinate.push({ x: startX, y: startY })
+
+    canvas.ontouchmove = canvas.onmousemove = function (ev) {
+      ctx.lineCap = 'dotted'
       let x = ev.offsetX;
       let y = ev.offsetY;
       if (ev.touches) {
@@ -65,10 +138,14 @@
       ctx.stroke();
       startY = y;
       startX = x;
+      coordinate.push({ x: startX, y: startY })
     }
-    document.ontouchend = document.onmouseup = function (ev) {
+    canvas.ontouchend = canvas.onmouseup = function (ev) {
+
       this.onmousemove = null;
       this.onmouseup = null;
+      allStep.push(coordinate)
+      coordinate = [];
     }
 
   }
