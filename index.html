@@ -25,7 +25,19 @@
       position: fixed;
       top: 0;
       left: 0;
+    }
 
+    .colorPicker {
+      width: 100px;
+      height: 100px;
+      position: fixed;
+      top: 30px;
+      left: 50px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      display: none;
+      overflow: hidden;
     }
   </style>
 </head>
@@ -35,19 +47,26 @@
     <button onclick="bigger()">变粗</button>
     <button onclick="clearCanvas()">清空</button>
     <button onclick="choseColor()">颜色TODO</button>
+    <div class="colorPicker">
+      <canvas class="color-picker"></canvas>
+    </div>
     <button onclick="backStep()">回退</button>
 
   </div>
-  <canvas></canvas>
+  <canvas id="canvas"></canvas>
 </body>
 
 </html>
 <script>
 
+  document.addEventListener('touchdown', function () { return false }, { passive: false })
+  document.addEventListener('touchmove', function () { return false }, { passive: false })
+
+
   let lineWidth = 1;
 
   const allStep = [];
-  const canvas = document.querySelector("canvas");
+  const canvas = document.querySelector("#canvas");
   const body = document.body;
   const { offsetWidth, offsetHeight } = body;
   const rate = window.devicePixelRatio;
@@ -71,9 +90,22 @@
   }
 
   function choseColor() {
+    const pickerColor = document.querySelector(".colorPicker");
+    const canvasColor = document.querySelector(".color-picker");
+    pickerColor.style.display = 'block';
+    const { offsetWidth, offsetHeight } = pickerColor;
+    canvasColor.style.cssText = `width:${offsetWidth}px;height:${offsetHeight}px;`
+    canvasColor.width = offsetWidth * rate;
+    canvasColor.height = offsetHeight * rate;
+    const ctx = canvasColor.getContext("2d");
+    const my_gradient = ctx.createLinearGradient(0, 0, offsetWidth, 0);
+    my_gradient.addColorStop(0, "#000");
+    my_gradient.addColorStop(1, "#fff");
+    ctx.fillStyle = my_gradient;
+    ctx.fillRect(0, 0, offsetWidth, offsetHeight);
+
 
   }
-
 
   function backStep() {
     ctx.clearRect(0, 0, offsetWidth, offsetHeight)
@@ -94,13 +126,6 @@
       }
     })
   }
-
-  // document.ontouchmove = function () {
-  //   return false;
-  // }
-  // document.ontouchend = function () {
-  //   return false;
-  // }
 
   canvas.ontouchstart = canvas.onmousedown = function (ev) {
     if (ev.target.nodeName != 'CANVAS') {
