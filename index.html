@@ -51,7 +51,7 @@
     ctx.closePath();
     ctx.stroke();
 
-    document.ontouchmove = function (ev) {
+    document.ontouchmove = document.onmousemove = function (ev) {
       let x = ev.offsetX;
       let y = ev.offsetY;
       if (ev.touches) {
@@ -66,7 +66,7 @@
       startY = y;
       startX = x;
     }
-    document.ontouchend = function (ev) {
+    document.ontouchend = document.onmouseup = function (ev) {
       this.onmousemove = null;
       this.onmouseup = null;
     }
