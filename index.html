@@ -39,42 +39,34 @@
   ctx.scale(rate, rate);
   let startX = 0, startY = 0;
 
-
-  function targetN(num) {
-    return Math.floor(num / rate)
-  }
-  canvas.ontouchstart = canvas.onmousedown = function (ev) {
-    startX = ev.offsetX;
-    startY = ev.offsetY;
+  canvas.ontouchstart = function (ev) {
 
     if (ev.touches) {
-      startX = ev.touches[0]['screenX'];
-      startY = ev.touches[0]['screenY'];
+      startX = ev.touches[0]['clientX'];
+      startY = ev.touches[0]['clientY'];
     }
     ctx.beginPath();
-    ctx.moveTo(targetN(startX), targetN(startY));
-    ctx.lineTo(startX, startY);
+    ctx.moveTo(startX, startY);
+    ctx.lineTo(startX + 20, startY + 20);
     ctx.closePath();
     ctx.stroke();
 
-    console.log(targetN(startX), targetN(startY))
-    this.ontouchmove = this.onmousemove = function (ev) {
+    canvas.ontouchmove = function (ev) {
       let x = ev.offsetX;
       let y = ev.offsetY;
       if (ev.touches) {
-        startX = ev.touches[0]['screenX'];
-        startY = ev.touches[0]['screenY'];
+        x = ev.touches[0]['clientX'];
+        y = ev.touches[0]['clientY'];
       }
       ctx.beginPath();
-      ctx.moveTo(targetN(startX), targetN(startY));
-      ctx.lineTo(targetN(x), targetN(y));
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(x, y);
       ctx.closePath();
       ctx.stroke();
       startY = y;
       startX = x;
     }
-    this.ontouchend = this.onmouseup = function (ev) {
-      console.log("end")
+    canvas.ontouchend = function (ev) {
       this.onmousemove = null;
       this.onmouseup = null;
     }
