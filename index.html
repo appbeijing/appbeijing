@@ -59,9 +59,9 @@
 </html>
 <script>
 
-  document.addEventListener('touchdown', function () { return false }, { passive: false })
-  document.addEventListener('touchmove', function () { return false }, { passive: false })
-
+  document.body.addEventListener('touchmove', function (e) {
+    e.preventDefault();
+  }, { passive: false });
 
   let lineWidth = 1;
 
