@@ -34,7 +34,7 @@
   console.log(rate, 'rate')
   canvas.width = offsetWidth * rate;
   canvas.height = offsetHeight * rate;
-  canvas.style.cssText = `width:${offsetWidth}px;height:${offsetHeight}px`
+  canvas.style.cssText = `width:${offsetWidth}px;height:${offsetHeight}px;position:fixed:top:0;left:0;`
   const ctx = canvas.getContext("2d");
   ctx.scale(rate, rate);
   let startX = 0, startY = 0;
