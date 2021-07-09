@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>canvas</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas></canvas>
+</body>
+
+</html>
+<script>
+  const canvas = document.querySelector("canvas");
+  const body = document.body;
+  const rate = window.devicePixelRatio;
+  canvas.width = body.offsetWidth * rate;
+  canvas.height = body.offsetHeight * rate;
+  canvas.style.cssText = `width:${body.offsetWidth}px;height:${body.offsetHeight}px`
+  const ctx = canvas.getContext("2d");
+  let startX = 0, startY = 0;
+  ctx.scale(rate,rate)
+  canvas.ontouchstart = canvas.onmousedown = function (ev) {
+    startX = ev.offsetX;
+    startY = ev.offsetY;
+   
+    if (ev.touches) {
+      startX = ev.touches[0]['clientX'];
+      startY = ev.touches[0]['clientY'];
+    }
+    ctx.beginPath();
+    ctx.moveTo(startX/rate, startY/rate);
+    ctx.lineTo(startX/rate, startY/rate);
+    ctx.closePath();
+    ctx.stroke();
+
+    this.touchmove = this.onmousemove = function (ev) {
+      let x = ev.offsetX;
+      let y = ev.offsetY;
+      if (ev.touches) {
+        startX = ev.touches[0]['clientX'];
+        startY = ev.touches[0]['clientY'];
+      }
+      ctx.beginPath();
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(x, y);
+      ctx.closePath();
+      ctx.stroke();
+      startY = y;
+      startX = x;
+
+    }
+    this.touchend = this.onmouseup = function (ev) {
+      // this.onmousedown = null;
+      this.onmousemove = null;
+      this.onmouseup = null;
+    }
+
+  }
+
+</script>
