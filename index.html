@@ -10,8 +10,6 @@
     * {
       margin: 0;
       padding: 0;
-      touch-action: none;
-      touch-action: pan-y;
     }
 
     html,
@@ -33,7 +31,6 @@
   const { offsetWidth, offsetHeight } = body;
   const rate = window.devicePixelRatio;
 
-  console.log(rate, 'rate')
   canvas.width = offsetWidth * rate;
   canvas.height = offsetHeight * rate;
   canvas.style.cssText = `width:${offsetWidth}px;height:${offsetHeight}px;position:fixed:top:0;left:0;`
@@ -41,7 +38,7 @@
   ctx.scale(rate, rate);
   let startX = 0, startY = 0;
 
-  canvas.ontouchstart = function (ev) {
+  document.ontouchstart = function (ev) {
 
     if (ev.touches) {
       startX = ev.touches[0]['clientX'];
@@ -53,7 +50,7 @@
     ctx.closePath();
     ctx.stroke();
 
-    canvas.ontouchmove = function (ev) {
+    document.ontouchmove = function (ev) {
       let x = ev.offsetX;
       let y = ev.offsetY;
       if (ev.touches) {
@@ -68,7 +65,7 @@
       startY = y;
       startX = x;
     }
-    canvas.ontouchend = function (ev) {
+    document.ontouchend = function (ev) {
       this.onmousemove = null;
       this.onmouseup = null;
     }
