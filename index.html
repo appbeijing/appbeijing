@@ -44,7 +44,8 @@
 
 <body>
   <div class="menu">
-    <button onclick="bigger()">变粗</button>
+    <button onclick="pencil()">铅笔</button>
+    <button onclick="bigger()">变大</button>
     <button onclick="clearCanvas()">清空</button>
     <button onclick="choseColor()">颜色</button>
     <div class="colorPicker">
@@ -52,7 +53,7 @@
     </div>
     <button onclick="backStep()">回退</button>
     <button onclick="rubber()">橡皮擦</button>
-    
+
 
 
   </div>
@@ -65,7 +66,8 @@
   document.body.addEventListener('touchmove', function (e) {
     e.preventDefault();
   }, { passive: false });
-
+  // pencil  rubber
+  let type = 'pencil'
   let lineWidth = 3;
   let lineColor = '#000'
   let allStep = [];
@@ -81,6 +83,9 @@
   ctx.scale(rate, rate);
   let startX = 0, startY = 0;
 
+  function pencil() {
+    type = 'pencil'
+  }
   function bigger() {
     lineWidth++;
   }
@@ -130,12 +135,38 @@
 
   }
 
-  function rubber(){
-    canvas.onclick=function(ev){
-      ctx.clearRect(ev.offsetX,ev.offsetY,10,10)
-    }
+  function rubber() {
     
+    type = 'rubber'
+    canvas.ontouchstart = canvas.onclick = function (ev) {
+      if (type != 'rubber') {
+        return false;
+      }
+      let x = ev.offsetX;
+      let y = ev.offsetY;
+      if (ev.touches) {
+        x = ev.touches[0]['clientX'];
+        y = ev.touches[0]['clientY'];
+      }
+      ctx.clearRect(x, y, 10, 10)
+
+      canvas.ontouchmove = canvas.onmousemove = function (ev) {
+        let x = ev.offsetX;
+        let y = ev.offsetY;
+        if (ev.touches) {
+          x = ev.touches[0]['clientX'];
+          y = ev.touches[0]['clientY'];
+        }
+        ctx.clearRect(x, y, 10, 10)
+      }
+
+      canvas.ontouchend = canvas.onmouseup = function (ev) {
+        this.onmousemove = null;
+        this.onmouseup = null;
+      }
+    }
   }
+
   function backStep() {
     ctx.clearRect(0, 0, offsetWidth, offsetHeight)
     allStep.pop();
@@ -159,6 +190,9 @@
 
   canvas.ontouchstart = canvas.onmousedown = function (ev) {
     if (ev.target.nodeName != 'CANVAS') {
+      return false;
+    }
+    if (type != 'pencil') {
       return false;
     }
     let coordinate = [];
