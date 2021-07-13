@@ -66,8 +66,7 @@
   document.body.addEventListener('touchmove', function (e) {
     e.preventDefault();
   }, { passive: false });
-  // pencil  rubber
-  let type = 'pencil'
+
   let lineWidth = 3;
   let lineColor = '#000'
   let allStep = [];
@@ -83,9 +82,6 @@
   ctx.scale(rate, rate);
   let startX = 0, startY = 0;
 
-  function pencil() {
-    type = 'pencil'
-  }
   function bigger() {
     lineWidth++;
   }
@@ -136,10 +132,8 @@
   }
 
   function rubber() {
-    
-    type = 'rubber'
-    canvas.ontouchstart = canvas.onclick = function (ev) {
-      if (type != 'rubber') {
+    canvas.ontouchstart = canvas.onmousedown = function (ev) {
+      if (ev.target.nodeName != 'CANVAS') {
         return false;
       }
       let x = ev.offsetX;
@@ -187,56 +181,54 @@
     })
   }
 
-
-  canvas.ontouchstart = canvas.onmousedown = function (ev) {
-    if (ev.target.nodeName != 'CANVAS') {
-      return false;
-    }
-    if (type != 'pencil') {
-      return false;
-    }
-    let coordinate = [];
-    ctx.lineCap = 'round';
-    ctx.lineWidth = lineWidth;
-    ctx.strokeStyle = lineColor;
-    let startX = ev.offsetX;
-    let startY = ev.offsetY;
-    if (ev.touches) {
-      startX = ev.touches[0]['clientX'];
-      startY = ev.touches[0]['clientY'];
-    }
-    ctx.beginPath();
-    ctx.moveTo(startX, startY);
-    ctx.lineTo(startX, startY);
-    ctx.closePath();
-    ctx.stroke();
-
-    coordinate.push({ x: startX, y: startY })
-
-    canvas.ontouchmove = canvas.onmousemove = function (ev) {
-      let x = ev.offsetX;
-      let y = ev.offsetY;
+  function pencil() {
+    canvas.ontouchstart = canvas.onmousedown = function (ev) {
+      if (ev.target.nodeName != 'CANVAS') {
+        return false;
+      }
+      let coordinate = [];
+      ctx.lineCap = 'round';
+      ctx.lineWidth = lineWidth;
+      ctx.strokeStyle = lineColor;
+      let startX = ev.offsetX;
+      let startY = ev.offsetY;
       if (ev.touches) {
-        x = ev.touches[0]['clientX'];
-        y = ev.touches[0]['clientY'];
+        startX = ev.touches[0]['clientX'];
+        startY = ev.touches[0]['clientY'];
       }
       ctx.beginPath();
       ctx.moveTo(startX, startY);
-      ctx.lineTo(x, y);
+      ctx.lineTo(startX, startY);
       ctx.closePath();
       ctx.stroke();
-      startY = y;
-      startX = x;
+
       coordinate.push({ x: startX, y: startY })
-    }
-    canvas.ontouchend = canvas.onmouseup = function (ev) {
 
-      this.onmousemove = null;
-      this.onmouseup = null;
-      allStep.push(coordinate)
-      coordinate = [];
-    }
+      canvas.ontouchmove = canvas.onmousemove = function (ev) {
+        let x = ev.offsetX;
+        let y = ev.offsetY;
+        if (ev.touches) {
+          x = ev.touches[0]['clientX'];
+          y = ev.touches[0]['clientY'];
+        }
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(x, y);
+        ctx.closePath();
+        ctx.stroke();
+        startY = y;
+        startX = x;
+        coordinate.push({ x: startX, y: startY })
+      }
+      canvas.ontouchend = canvas.onmouseup = function (ev) {
 
+        this.onmousemove = null;
+        this.onmouseup = null;
+        allStep.push(coordinate)
+        coordinate = [];
+      }
+    }
   }
 
+  pencil();
 </script>
