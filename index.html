@@ -66,175 +66,175 @@
 </html>
 <script>
 
-  document.body.addEventListener('touchmove', function (e) {
-    e.preventDefault();
-  }, { passive: false });
+//   document.body.addEventListener('touchmove', function (e) {
+//     e.preventDefault();
+//   }, { passive: false });
 
-  let lineWidth = 3;
-  let lineColor = '#000'
-  let allStep = [];
-  const canvas = document.querySelector("#canvas");
-  const body = document.body;
-  const { offsetWidth, offsetHeight } = body;
-  const rate = window.devicePixelRatio;
+//   let lineWidth = 3;
+//   let lineColor = '#000'
+//   let allStep = [];
+//   const canvas = document.querySelector("#canvas");
+//   const body = document.body;
+//   const { offsetWidth, offsetHeight } = body;
+//   const rate = window.devicePixelRatio;
 
-  canvas.width = offsetWidth * rate;
-  canvas.height = offsetHeight * rate;
-  canvas.style.cssText = `width:${offsetWidth}px;height:${offsetHeight}px;position:fixed:top:0;left:0;`
-  const ctx = canvas.getContext("2d");
-  ctx.scale(rate, rate);
-  let startX = 0, startY = 0;
+//   canvas.width = offsetWidth * rate;
+//   canvas.height = offsetHeight * rate;
+//   canvas.style.cssText = `width:${offsetWidth}px;height:${offsetHeight}px;position:fixed:top:0;left:0;`
+//   const ctx = canvas.getContext("2d");
+//   ctx.scale(rate, rate);
+//   let startX = 0, startY = 0;
 
-  function bigger() {
-    lineWidth++;
-  }
+//   function bigger() {
+//     lineWidth++;
+//   }
 
-  function clearCanvas() {
-    ctx.clearRect(0, 0, offsetWidth, offsetHeight)
-    allStep = [];
-  }
+//   function clearCanvas() {
+//     ctx.clearRect(0, 0, offsetWidth, offsetHeight)
+//     allStep = [];
+//   }
 
-  function choseColor() {
+//   function choseColor() {
 
-    const pickerColor = document.querySelector(".colorPicker");
-    const canvasColor = document.querySelector(".color-picker");
-    pickerColor.style.display = 'block';
-    const { offsetWidth, offsetHeight } = pickerColor;
-    canvasColor.style.cssText = `width:${offsetWidth}px;height:${offsetHeight}px;`
-    canvasColor.width = offsetWidth * rate;
-    canvasColor.height = offsetHeight * rate;
-    const ctx = canvasColor.getContext("2d");
-    ctx.scale(rate, rate);
-    for (var i = 0; i < 6; i++) {
-      for (var j = 0; j < 6; j++) {
-        ctx.fillStyle = 'rgb(' + Math.floor(255 - 42.5 * i) + ',' +
-          Math.floor(255 - 42.5 * j) + ',0)';
-        ctx.fillRect(j * Math.floor(offsetWidth / 6), i * Math.floor(offsetHeight / 6), Math.floor(offsetWidth / 6), Math.floor(offsetHeight / 6));
-      }
-    }
+//     const pickerColor = document.querySelector(".colorPicker");
+//     const canvasColor = document.querySelector(".color-picker");
+//     pickerColor.style.display = 'block';
+//     const { offsetWidth, offsetHeight } = pickerColor;
+//     canvasColor.style.cssText = `width:${offsetWidth}px;height:${offsetHeight}px;`
+//     canvasColor.width = offsetWidth * rate;
+//     canvasColor.height = offsetHeight * rate;
+//     const ctx = canvasColor.getContext("2d");
+//     ctx.scale(rate, rate);
+//     for (var i = 0; i < 6; i++) {
+//       for (var j = 0; j < 6; j++) {
+//         ctx.fillStyle = 'rgb(' + Math.floor(255 - 42.5 * i) + ',' +
+//           Math.floor(255 - 42.5 * j) + ',0)';
+//         ctx.fillRect(j * Math.floor(offsetWidth / 6), i * Math.floor(offsetHeight / 6), Math.floor(offsetWidth / 6), Math.floor(offsetHeight / 6));
+//       }
+//     }
 
-    canvasColor.onclick = function (ev) {
-      const imageData = ctx.getImageData(ev.offsetX, ev.offsetY, 1, 1);
-      console.log(imageData);
-      lineColor = `rgb(${imageData.data[0]},${imageData.data[1]},${imageData.data[2]})`
-    }
+//     canvasColor.onclick = function (ev) {
+//       const imageData = ctx.getImageData(ev.offsetX, ev.offsetY, 1, 1);
+//       console.log(imageData);
+//       lineColor = `rgb(${imageData.data[0]},${imageData.data[1]},${imageData.data[2]})`
+//     }
 
-    pickerColor.onclick = function () {
-      this.style.display = "none"
-    }
-
-
-
-    // const my_gradient = ctx.createLinearGradient(0, 0, offsetWidth, 0);
-    // my_gradient.addColorStop(0, "#000");
-    // my_gradient.addColorStop(1, "#fff");
-    // ctx.fillStyle = my_gradient;
-    // ctx.fillRect(0, 0, offsetWidth, offsetHeight);
+//     pickerColor.onclick = function () {
+//       this.style.display = "none"
+//     }
 
 
-  }
 
-  function rubber() {
-    canvas.ontouchstart = canvas.onmousedown = function (ev) {
-      if (ev.target.nodeName != 'CANVAS') {
-        return false;
-      }
-      let x = ev.offsetX;
-      let y = ev.offsetY;
-      if (ev.touches) {
-        x = ev.touches[0]['clientX'];
-        y = ev.touches[0]['clientY'];
-      }
-      ctx.clearRect(x, y, 10, 10)
+//     // const my_gradient = ctx.createLinearGradient(0, 0, offsetWidth, 0);
+//     // my_gradient.addColorStop(0, "#000");
+//     // my_gradient.addColorStop(1, "#fff");
+//     // ctx.fillStyle = my_gradient;
+//     // ctx.fillRect(0, 0, offsetWidth, offsetHeight);
 
-      canvas.ontouchmove = canvas.onmousemove = function (ev) {
-        let x = ev.offsetX;
-        let y = ev.offsetY;
-        if (ev.touches) {
-          x = ev.touches[0]['clientX'];
-          y = ev.touches[0]['clientY'];
-        }
-        ctx.clearRect(x, y, 10, 10)
-      }
 
-      canvas.ontouchend = canvas.onmouseup = function (ev) {
-        this.onmousemove = null;
-        this.onmouseup = null;
-      }
-    }
-  }
+//   }
 
-  function backStep() {
-    ctx.clearRect(0, 0, offsetWidth, offsetHeight)
-    allStep.pop();
-    allStep.forEach((item) => {
-      draw(item);
-    })
-  }
+//   function rubber() {
+//     canvas.ontouchstart = canvas.onmousedown = function (ev) {
+//       if (ev.target.nodeName != 'CANVAS') {
+//         return false;
+//       }
+//       let x = ev.offsetX;
+//       let y = ev.offsetY;
+//       if (ev.touches) {
+//         x = ev.touches[0]['clientX'];
+//         y = ev.touches[0]['clientY'];
+//       }
+//       ctx.clearRect(x, y, 10, 10)
 
-  function draw(data) {
-    ctx.lineWidth = data.lineWidth;
-    ctx.strokeStyle = data.lineColor;
-    data.data.forEach((item, index) => {
-      console.log(item)
-      if (data.data[index + 1]) {
-        ctx.beginPath();
-        ctx.moveTo(item.x, item.y);
-        ctx.lineTo(data.data[index + 1]['x'], data.data[index + 1]['y']);
-        ctx.closePath();
-        ctx.stroke();
-      }
-    })
-  }
+//       canvas.ontouchmove = canvas.onmousemove = function (ev) {
+//         let x = ev.offsetX;
+//         let y = ev.offsetY;
+//         if (ev.touches) {
+//           x = ev.touches[0]['clientX'];
+//           y = ev.touches[0]['clientY'];
+//         }
+//         ctx.clearRect(x, y, 10, 10)
+//       }
 
-  function pencil() {
-    canvas.ontouchstart = canvas.onmousedown = function (ev) {
-      if (ev.target.nodeName != 'CANVAS') {
-        return false;
-      }
-      let coordinate = [];
-      ctx.lineCap = 'round';
-      ctx.lineWidth = lineWidth;
-      ctx.strokeStyle = lineColor;
-      let startX = ev.offsetX;
-      let startY = ev.offsetY;
-      if (ev.touches) {
-        startX = ev.touches[0]['clientX'];
-        startY = ev.touches[0]['clientY'];
-      }
-      ctx.beginPath();
-      ctx.moveTo(startX, startY);
-      ctx.lineTo(startX, startY);
-      ctx.closePath();
-      ctx.stroke();
+//       canvas.ontouchend = canvas.onmouseup = function (ev) {
+//         this.onmousemove = null;
+//         this.onmouseup = null;
+//       }
+//     }
+//   }
 
-      coordinate.push({ x: startX, y: startY })
+//   function backStep() {
+//     ctx.clearRect(0, 0, offsetWidth, offsetHeight)
+//     allStep.pop();
+//     allStep.forEach((item) => {
+//       draw(item);
+//     })
+//   }
 
-      canvas.ontouchmove = canvas.onmousemove = function (ev) {
-        let x = ev.offsetX;
-        let y = ev.offsetY;
-        if (ev.touches) {
-          x = ev.touches[0]['clientX'];
-          y = ev.touches[0]['clientY'];
-        }
-        ctx.beginPath();
-        ctx.moveTo(startX, startY);
-        ctx.lineTo(x, y);
-        ctx.closePath();
-        ctx.stroke();
-        startY = y;
-        startX = x;
-        coordinate.push({ x: startX, y: startY })
-      }
-      canvas.ontouchend = canvas.onmouseup = function (ev) {
+//   function draw(data) {
+//     ctx.lineWidth = data.lineWidth;
+//     ctx.strokeStyle = data.lineColor;
+//     data.data.forEach((item, index) => {
+//       console.log(item)
+//       if (data.data[index + 1]) {
+//         ctx.beginPath();
+//         ctx.moveTo(item.x, item.y);
+//         ctx.lineTo(data.data[index + 1]['x'], data.data[index + 1]['y']);
+//         ctx.closePath();
+//         ctx.stroke();
+//       }
+//     })
+//   }
 
-        this.onmousemove = null;
-        this.onmouseup = null;
-        allStep.push({ data: coordinate, lineColor: lineColor, lineWidth: lineWidth })
-        coordinate = [];
-      }
-    }
-  }
+//   function pencil() {
+//     canvas.ontouchstart = canvas.onmousedown = function (ev) {
+//       if (ev.target.nodeName != 'CANVAS') {
+//         return false;
+//       }
+//       let coordinate = [];
+//       ctx.lineCap = 'round';
+//       ctx.lineWidth = lineWidth;
+//       ctx.strokeStyle = lineColor;
+//       let startX = ev.offsetX;
+//       let startY = ev.offsetY;
+//       if (ev.touches) {
+//         startX = ev.touches[0]['clientX'];
+//         startY = ev.touches[0]['clientY'];
+//       }
+//       ctx.beginPath();
+//       ctx.moveTo(startX, startY);
+//       ctx.lineTo(startX, startY);
+//       ctx.closePath();
+//       ctx.stroke();
 
-  pencil();
+//       coordinate.push({ x: startX, y: startY })
+
+//       canvas.ontouchmove = canvas.onmousemove = function (ev) {
+//         let x = ev.offsetX;
+//         let y = ev.offsetY;
+//         if (ev.touches) {
+//           x = ev.touches[0]['clientX'];
+//           y = ev.touches[0]['clientY'];
+//         }
+//         ctx.beginPath();
+//         ctx.moveTo(startX, startY);
+//         ctx.lineTo(x, y);
+//         ctx.closePath();
+//         ctx.stroke();
+//         startY = y;
+//         startX = x;
+//         coordinate.push({ x: startX, y: startY })
+//       }
+//       canvas.ontouchend = canvas.onmouseup = function (ev) {
+
+//         this.onmousemove = null;
+//         this.onmouseup = null;
+//         allStep.push({ data: coordinate, lineColor: lineColor, lineWidth: lineWidth })
+//         coordinate = [];
+//       }
+//     }
+//   }
+
+//   pencil();
 </script>
